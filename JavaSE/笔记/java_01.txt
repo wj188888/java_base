@@ -1,3 +1,15 @@
 标识符是做为一个称呼；
 
 常用的标识符：
+
+
+包机制：
+    一般利用公司域名倒置作为包名；
+    package pkg1[pkg2[pkg3]]
+    为了能够使用某一个包的成员，我们需要在java程序中明确导入该包，使用import语句可完成此功能
+    import package1[...]
+
+
+生成javadoc，命令： javadoc 参数 java文件
+    javadoc -encoding UTF-8 -charset UTF-8 Doc01.java
+使用idea生成javaDoc文档!

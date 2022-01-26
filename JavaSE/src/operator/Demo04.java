@@ -1,3 +1,4 @@
+package operator;
 public class Demo04 {
     // 实例变量,类中方法外;如果不设置就会有个默认值
     String name= "马思密达看什么";
@@ -23,6 +24,12 @@ public class Demo04 {
         System.out.println(PI);
         final double PIY = 3.14;
         System.out.println(PIY);
+
+        // 短路运算
+        int c = 5;
+        boolean d = (c>4)&&(c++<4);
+        System.out.println("d: "+d);
+        System.out.println(c);
     }
 }
 /*
