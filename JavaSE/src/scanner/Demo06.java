@@ -11,9 +11,12 @@ public class Demo06 {
         System.out.println("请输入double类型数字：\n");
         while (scanner.hasNextDouble()) {
             double x = scanner.nextDouble();
+
             m = m + 1;
             sum = sum + x;
+            System.out.println("你输入了第"+m+"个数据，然后当前结果sum="+sum);
         }
-        System.out.println("这些数字之和未: \t" + sum);
+        System.out.println(m + "个数字之和未: \t" + sum);
+        System.out.println(m + "个数字的平均数是: \t" + (sum/m));
     }
 }

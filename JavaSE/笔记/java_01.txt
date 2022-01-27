@@ -20,3 +20,4 @@ Scanner对象：
     使用Next()与nextLine()方法获取输入的字符串
     使用hasNext()于hasNextLine()判断是否还有输入的数据;
 
+JAVA的基本结构是顺序结构，除非特别指明，否则就按照顺序执行；
