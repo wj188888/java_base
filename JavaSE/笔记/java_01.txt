@@ -13,3 +13,10 @@
 生成javadoc，命令： javadoc 参数 java文件
     javadoc -encoding UTF-8 -charset UTF-8 Doc01.java
 使用idea生成javaDoc文档!
+
+Scanner对象：
+    获取用户的输入；
+    Scanner s = new Scannner(System.in);
+    使用Next()与nextLine()方法获取输入的字符串
+    使用hasNext()于hasNextLine()判断是否还有输入的数据;
+
