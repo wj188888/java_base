@@ -20,3 +20,5 @@ public class Demo06 {
         System.out.println(m + "个数字的平均数是: \t" + (sum/m));
     }
 }
+// 反编译 java---class （反编译）idea
+// 把反编译的class 文件编译成我们人可以看懂的内容
