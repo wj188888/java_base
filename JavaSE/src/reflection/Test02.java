@@ -26,7 +26,9 @@ class User{
     private String name;
     private int id;
     private char sex;
-
+    public User(){
+        // 无参构造器
+    }
     public String getName() {
         return name;
     }
