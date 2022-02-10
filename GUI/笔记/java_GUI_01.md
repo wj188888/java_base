@@ -82,3 +82,112 @@ public class TestPanel {
 ```
 *关闭图片*
 ![关闭window](..\images\closeWindow.png)
+# 布局管理
+- 流式布局
+- 东南西北中（页面布局）
+- 表格布局 Grid
+
+**练习题1**
+![练习](../练习1.png)
+
+```aidl
+package ex01;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class TestLayoutResult {
+    public static void main(String[] args) {
+        // 总
+        Frame frame = new Frame("TestLayoutResult");
+        frame.setLocation(500,400);
+        frame.setSize(700,500);
+        frame.setBackground(Color.black);
+        frame.setVisible(true);
+        frame.setLayout(new GridLayout(2,1));
+
+        // 4个面板
+        Panel p1 = new Panel(new BorderLayout());
+        Panel p2 = new Panel(new GridLayout(2,1));
+        Panel p3= new Panel(new BorderLayout());
+        Panel p4 = new Panel(new GridLayout(2,2));
+
+        p1.add(new Button("West-1"),BorderLayout.WEST);
+        p1.add(new Button("East-1"),BorderLayout.EAST);
+        p2.add(new Button("p2-btn-1"));
+        p2.add(new Button("p2-btn-2"));
+        p1.add(p2,BorderLayout.CENTER);
+
+        p3.add(new Button("West-2"),BorderLayout.WEST);
+        p3.add(new Button("East-2"),BorderLayout.EAST);
+        for (int i = 0; i < 4; i++) {
+            p4.add(new Button("for-"+i));
+        }
+        p3.add(p4, BorderLayout.CENTER);
+
+        frame.add(p1);
+        frame.add(p3);
+
+        // 关闭这个窗口
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+    }
+}
+```
+## 总结
+1. Frame是一个顶级窗口
+2. Panel无法单独显示，必须添加到某个容器中
+
+# 事件监听
+- 多个按钮共享一个事件
+```aidl
+package lesson02;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+// 多个按钮共享一个事件
+public class TestActionTwo {
+    public static void main(String[] args) {
+        // 两个按钮，实现同一个监听
+        // 开始 停止
+        Frame frame = new Frame("开始-停止");
+
+        Button button1 = new Button("start");
+        Button button2 = new Button("stop");
+
+        // 可以显示的定义触发返回的命令，如果不显示定义，则会走默认
+        button2.setActionCommand("button2-stop");
+
+        MyMonitor myMonitor = new MyMonitor();
+        button1.addActionListener(myMonitor);
+        button2.addActionListener(myMonitor);
+
+        frame.add(button1, BorderLayout.NORTH);
+        frame.add(button2, BorderLayout.SOUTH);
+        frame.pack();
+        frame.setVisible(true);
+
+    }
+}
+
+
+class MyMonitor implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // 获取按钮的信息
+        System.out.println("按钮被点击了"+e.getActionCommand());
+    }
+}
+```
+## 计算器
+1. 输入框TextField监听
+2. 
