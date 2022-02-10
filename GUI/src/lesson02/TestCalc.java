@@ -57,7 +57,7 @@ class Calculator extends Frame{
     private class MyCalculatorListener implements ActionListener{
 
         @Override
-        public void actionPerformed(ActionEvent e) throws NullPointerException {
+        public void actionPerformed(ActionEvent e){
             // 1. 获得加数和被加数
             int n1 = Integer.parseInt(num1.getText());
             int n2 = Integer.parseInt(num2.getText());

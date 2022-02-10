@@ -251,7 +251,8 @@ class MyActionListener2 implements ActionListener{
 ```
 2. 简易计算器
 组合 + 内部类回顾复习
-   **oop原则:组合，大于继承!**
+   
+**oop原则:组合，大于继承!**
 ```aidl
 class A extends B{
 
