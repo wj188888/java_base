@@ -91,3 +91,20 @@ class MyDialogDemo extends JDialog{
     }
 }
 ```
+## 标签
+label
+`new Label("名称);`
+**图标 icon**
+- Icon接口
+
+
+## 面板
+
+## 按钮
+- 单选按钮
+- 复选按钮
+
+## 下拉列表
+
+
+# 文本框
