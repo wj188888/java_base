@@ -285,6 +285,165 @@ public class JButtonDemo03 extends JFrame{
 
 ```
 ## 下拉列表
+```aidl
+package lesson06;
 
+import javax.swing.*;
+import java.awt.*;
+
+public class TestComboboxDemo01 extends JFrame {
+    public TestComboboxDemo01() throws HeadlessException {
+        Container container = this.getContentPane();
+
+        JComboBox status = new JComboBox();
+        status.addItem(null);
+        status.addItem("正在热映");
+        status.addItem("已下架");
+        status.addItem("即将上映");
+
+        container.add(status);
+
+        this.setVisible(true);
+        this.setSize(500,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new TestComboboxDemo01();
+    }
+}
+
+```
+
+## 列表框
+```aidl
+package lesson06;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Vector;
+
+public class TestComboboxDemo02 extends JFrame {
+    public TestComboboxDemo02() throws HeadlessException {
+        Container container = this.getContentPane();
+
+
+        Vector vector = new Vector();
+        JList jList = new JList(vector); // 列表放内容
+        vector.add("张三");
+        vector.add("李四");
+        vector.add("王五");
+
+        container.add(jList);
+        this.setVisible(true);
+        this.setSize(500,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new TestComboboxDemo02();
+    }
+}
+
+```
+### 应用场景
+- 选择地区，或者一些单个选项
+- 列表，展示信息，一般是动态扩容！
 
 ## 文本框
+- 文本框
+
+```aidl
+package lesson06;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Vector;
+
+// 文本框
+public class TestDemo01 extends JFrame {
+    public TestDemo01() throws HeadlessException {
+        Container container = this.getContentPane();
+
+        // 文本框
+        JTextField textField1 = new JTextField("hello");
+        JTextField textField2 = new JTextField("world", 20);
+        container.add(textField1,BorderLayout.NORTH);
+        container.add(textField2,BorderLayout.SOUTH);
+
+
+        this.setVisible(true);
+        this.setSize(500,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new TestDemo01();
+    }
+}
+
+
+```
+- 密码框
+
+```aidl
+package lesson06;
+
+import javax.swing.*;
+import java.awt.*;
+
+// 密码框
+public class TestDemo02 extends JFrame{
+    public TestDemo02() throws HeadlessException {
+        Container container = this.getContentPane();
+
+
+        // 密码框
+        JPasswordField passwordField1 = new JPasswordField();
+        passwordField1.setEchoChar('^'); // 这里是char类型
+        JPasswordField passwordField2 = new JPasswordField();
+        JPasswordField passwordField3 = new JPasswordField();
+        container.add(passwordField1,BorderLayout.NORTH);
+        container.add(passwordField2,BorderLayout.SOUTH);
+        container.add(passwordField3);
+
+        this.setVisible(true);
+        this.setSize(500,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new TestDemo02();
+    }
+}
+```
+- 文本域
+
+```aidl
+package lesson05;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class JScrollDemo extends JFrame {
+
+    public JScrollDemo() throws HeadlessException {
+        Container container = this.getContentPane();
+
+        // 文本域
+        JTextArea textArea = new JTextArea(20, 50);
+        textArea.setText("欢迎学习java");
+
+        JScrollPane scrollPane = new JScrollPane(textArea); // 放在scrollPanel中s
+        container.add(scrollPane);
+
+        this.setVisible(true);
+        this.setBounds(100,100,300,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new JScrollDemo();
+    }
+}
+```
