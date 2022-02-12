@@ -133,11 +133,157 @@ public class ImageIconDemo extends JFrame{
 ```
 
 ## 面板
+**JPanel**
+```aidl
+package lesson05;
 
+import javax.swing.*;
+import java.awt.*;
+
+public class JPanelDemo extends JFrame {
+    public JPanelDemo() {
+        Container container = this.getContentPane();
+
+        container.setLayout(new GridLayout(2,1,10,10));
+
+        JPanel panel1 = new JPanel(new GridLayout(1,3));
+        JPanel panel2 = new JPanel(new GridLayout(1,2));
+        JPanel panel3 = new JPanel(new GridLayout(2,1));
+        JPanel panel4 = new JPanel(new GridLayout(3,2));
+        panel1.add(new JButton("1"));
+        panel1.add(new JButton("2"));
+        panel1.add(new JButton("3"));
+        panel2.add(new JButton("4"));
+        panel2.add(new JButton("5"));
+        panel3.add(new JButton("6"));
+        panel3.add(new JButton("7"));
+        panel4.add(new JButton("8"));
+        panel4.add(new JButton("9"));
+        panel4.add(new JButton("10"));
+        panel4.add(new JButton("11"));
+        panel4.add(new JButton("12"));
+        panel4.add(new JButton("13"));
+
+        container.add(panel1);
+        container.add(panel2);
+        container.add(panel3);
+        container.add(panel4);
+
+        this.setVisible(true);
+        this.setSize(500,500);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+
+    }
+
+    public static void main(String[] args) {
+        new JPanelDemo();
+    }
+}
+
+```
+**JScroll,滚动条**
+```aidl
+package lesson05;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class JScrollDemo extends JFrame {
+
+    public JScrollDemo() throws HeadlessException {
+        Container container = this.getContentPane();
+
+        // 文本域
+        JTextArea textArea = new JTextArea(20, 50);
+        textArea.setText("欢迎学习java");
+
+        JScrollPane scrollPane = new JScrollPane(textArea); // 放在scrollPanel中s
+        container.add(scrollPane);
+
+        this.setVisible(true);
+        this.setBounds(100,100,300,350);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new JScrollDemo();
+    }
+}
+
+```
 ## 按钮
 - 单选按钮
-- 复选按钮
+```aidl
+package lesson05;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.net.URL;
+
+public class JButtonDemo02 extends JFrame{
+    public JButtonDemo02() throws HeadlessException {
+        Container container = this.getContentPane();
+        URL resource = JButtonDemo02.class.getResource("icon.png");// 获取图片路径
+        Icon icon = new ImageIcon(resource);
+
+        // 单选框
+        JRadioButton radioButton01 = new JRadioButton("JRadioButton01");
+        JRadioButton radioButton02 = new JRadioButton("JRadioButton01");
+        JRadioButton radioButton03 = new JRadioButton("JRadioButton01");
+
+        // 由于单选框只能选择一个，分组,一个组中只能选一个
+        ButtonGroup group = new ButtonGroup();
+        group.add(radioButton01);
+        group.add(radioButton02);
+        group.add(radioButton03);
+
+        container.add(radioButton01, BorderLayout.CENTER);
+        container.add(radioButton02, BorderLayout.NORTH);
+        container.add(radioButton03, BorderLayout.SOUTH);
+
+        this.setVisible(true);
+        this.setSize(500,300);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+    }
+
+    public static void main(String[] args) {
+        new JButtonDemo02();
+    }
+}
+```
+- 复选按钮
+```aidl
+package lesson05;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
+public class JButtonDemo03 extends JFrame{
+    public JButtonDemo03() throws HeadlessException {
+        Container container = this.getContentPane();
+
+        // 多选框
+        JCheckBox checkBox01 = new JCheckBox("checkBox01");
+        JCheckBox checkBox02 = new JCheckBox("checkBox02");
+        container.add(checkBox01,BorderLayout.NORTH);
+        container.add(checkBox02,BorderLayout.SOUTH);
+
+        this.setVisible(true);
+        this.setSize(500,300);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+    }
+
+    public static void main(String[] args) {
+        new JButtonDemo03();
+    }
+}
+
+```
 ## 下拉列表
 
 
