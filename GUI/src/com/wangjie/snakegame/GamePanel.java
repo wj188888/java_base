@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
-    // 定义设的数据结构
+    // 定义蛇的数据结构
     int length; // 蛇的长度
     int[] snakeX = new int[600]; // 蛇的坐标25,25
     int[] snakeY = new int[500]; // 蛇的坐标25,25
@@ -113,9 +113,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             g.setColor(Color.red);
             g.setFont(new Font("微软雅黑",Font.BOLD,40)); // 字体设置
             g.drawString("游戏失败,按下空格重新开始",300,300);
+
         }
-
-
     }
 
     @Override
@@ -158,7 +157,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (isStart && isFail==false) { // 如果游戏是开始状态，就让小蛇动起来
+        if (isStart && isFail==false) { // 如果游戏是开始状态，就让小蛇动起来，
             // 吃食物
             if (snakeX[0] == foodx && snakeY[0] == foody){
                 length++;
@@ -168,9 +167,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                 foodx = 25+25*random.nextInt(34);
                 foody = 75+25*random.nextInt(24);
             }
-
-
-
 
             // 右移
             for (int i = length-1; i > 0; i--) {
@@ -192,7 +188,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                 if (snakeY[0] > 650){snakeY[0]=75;}
             }
 
-
             // 边界判断
             if (snakeX[0] > 850){
                 snakeX[0] = 25;
@@ -206,11 +201,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                 
             }
 
-
             repaint(); // 重画页面
-
-
-
 
         }
         timer.start(); // 定时器开始
