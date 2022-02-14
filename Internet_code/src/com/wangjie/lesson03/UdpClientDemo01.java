@@ -12,7 +12,6 @@ public class UdpClientDemo01 {
 
 
 
-
         // 2.建立一个包
         String msg = "你,好服务器!";
 
