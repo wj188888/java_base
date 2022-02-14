@@ -272,7 +272,7 @@ public class TalkTeacher {
 ```
 ## URL
 统一资源定位符：定位资源的，定位互联网的某一个资源
-DNS域名解析 www.baidu.com
+DNS域名解析 比如：www.baidu.com
 ```
 协议://ip地址/端口号
 ```
