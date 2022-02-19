@@ -72,3 +72,35 @@ lambda表达式只能有一行代码的情况下才能简化成为一行，如�
 
 # 详细
 - new的时候就会创建一个线程
+- 调用start方法就进入了就绪状态
+- 调度，就开始运行状态
+- 当调用sleep或者wait哦同步锁定时，
+- 死亡状态
+
+**线程的方法有**
+- setPriority(int newPriority)更改线程的优先级
+- static void sleep(long millis)指定毫秒数内让当前正在执行的线程休眠
+- void join() 等待该线程终止
+- static void yield() 暂停当前正在执行的线程对象，并执行其他线程
+- void interrupt() 中断线程，别用这个方式
+- boolean isAlive() 测试线程是否处于活动状态
+
+## 线程休眠
+1. sleep存在异常InterruptedException;
+2. sleep时间达到后线程进入就绪状态；
+3. sleep可模拟网络延时，倒计时等
+4. 每一个对象都有锁，sleep不会释放锁；
+
+## 线程礼让
+
+- 礼让线程，让当前正在执行的线程暂停，但不阻塞
+- 将线程从运行状态转为就绪状态
+- 让CPU重新调度，礼让不一定成功！看cpu心情
+- 礼让不一定成功
+
+## join
+- join合并线程，待此线程执行完成后，再执行其他线程，其他线程阻塞
+- 可以想成插队
+
+
+
