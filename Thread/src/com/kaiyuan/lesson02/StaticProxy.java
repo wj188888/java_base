@@ -20,7 +20,6 @@ public class StaticProxy {
 
         new WeddingCompany(new You()).Happymarry();
 
-
     }
 }
 
