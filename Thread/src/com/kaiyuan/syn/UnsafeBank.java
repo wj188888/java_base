@@ -1,8 +1,6 @@
 package com.kaiyuan.syn;
 
 
-import org.apache.commons.io.input.TaggedReader;
-
 // 不安全的取钱
 // 两个人去银行取钱，账户
 public class UnsafeBank {
