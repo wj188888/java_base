@@ -36,7 +36,9 @@ class BuyTicket implements Runnable{
         }
     }
 
-    private void buy() throws InterruptedException {
+
+    // 加上synchronized变成同步方法,锁的是this
+    private synchronized void buy() throws InterruptedException {
         // 判断是否有票
         if (ticketNums <= 0) {
             flag = false;
@@ -44,9 +46,9 @@ class BuyTicket implements Runnable{
         }
 
         // 模拟延时
-        Thread.sleep(100); // 每次都会添加一个异常的抛出
+        Thread.sleep(400); // 每次都会添加一个异常的抛出
 
         // 买票
-        System.out.println(Thread.currentThread()+"拿到"+ticketNums--);
+        System.out.println(Thread.currentThread().getName()+"拿到"+ticketNums--);
     }
 }
