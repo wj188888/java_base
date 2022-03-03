@@ -34,3 +34,95 @@ JavaEE:企业级java开发 Web
 **DBMS(数据库管理系统)**
 - 数据库管理软件
 - Mysql来了 
+
+## mysql的安装
+省略---
+
+## SQLyog安装和使用
+每一个操作都对应一组sql的操作
+- 修改密码的其他方式
+    - `update mysql.user set authentication_string=password('123456') where user='root' and Host='localhost'; -- 修改用户密码`
+    - `flush privileges; -- 刷新权限`
+---
+
+- 所有的语句都使用：结尾
+`show databases;`
+
+- 切换数据库
+    - use database
+- 查看数据库中的所有的表
+    - show tables
+- 显示数据库中所有的表的信息
+    - describe student
+
+- 退出连接
+    - exit
+- 单行注释
+    - `-- wangjie`
+- 多行注释
+    - `/*hello,wangjie*/`
+
+数据库分为:
+- DDL
+- DML
+- DQL
+- DCL
+
+1. CRUD增删查改
+2. CV程序员
+3. API程序猿，CRUD程序猿! (业务！)
+### 操作数据库
+1. 创建数据库
+    - `create database [if not exists] westos`
+2. 删除数据库
+    - `drop database [if exists] hello`
+3. 使用数据库
+    - `use databaseName`
+
+## 数据库的列类型
+- tinyint 1个字节
+- smallint 较小的数据 2个字节
+- mediumint 中等大小的数据 3个字节
+- int 标准的整数 4个字节
+- bigint 较大的数据 8个字节
+- float 浮点数 4个字节
+- double 浮点数 8个字节
+- decimal 字符串形式的浮点数 金融计算的时候，一般是应用decimal
+### 字符串类型
+- char 字符串固定大小的 0-255
+- varchar 可变字符串 0-65535
+- tinytext 微型文本 2^8 - 1
+- text 文本串 2^16 - 1 保存大文本
+### 时间和日期
+java.util.Date
+- date YYYY-MM-DD,日期格式
+- time HH:mm:ss, 时间格式
+- timestamp 时间戳，1970.1.1到现在的毫秒数
+- year 年份表示
+### null
+- 没有值，未知
+- 注意，不建议使用NULL
+
+数据库的字段属性（重点）
+- Unsigned:
+    - 无符号的整数
+    - 声明了该列不能声明为负数
+-zerofill
+    - 0填充的
+    - 不足的位数，使用0来填充，int（3），5 。。。 005
+- 自增：
+    - 通常理解为自增，自动在上一条记录的基础上+1（默认）
+    - 通常用来设计唯一的主键-index，必须是整数类型
+    - 可以自定义设计主键自增的初始值和步长
+- 非空 Null not null
+    - 不给赋值就报错
+**拓展：每一个表都存在以下五个字段**
+    - id，主键
+    - `version` 乐观锁
+    - is_delete 伪删除
+    - gmt_create 创建时间
+    - gmt_update 修改时间
+
+
+
+
