@@ -22,7 +22,7 @@ public class Demo02 {
         }else {
             System.out.println("输出不是小数数据！");
         }
-
+        // 如论如何都要把close关闭函数写好桑去
         scanner.close();
     }
 }
