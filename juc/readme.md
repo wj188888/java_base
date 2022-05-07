@@ -144,8 +144,271 @@ class Ticket2 {
 面试题：
 1.
 Synchronized wait notify（老版）
-Juc lock
+Juc lock await signal
 >大有门道
 
 ### JUC版生产者和消费者
+通过Lock找到Condition
+Lock替换sychronized方法和语句的使用，Condition取代l对象监视器方法的使用。
 
+```
+package com.wangjie;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ProductComtumeB {
+    public static void main(String[] args) {
+        Data2 data = new Data2();
+
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data.increment();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "A").start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data.decrement();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "B").start();
+
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data.increment();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "C").start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data.decrement();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "D").start();
+    }
+}
+
+// 等待，业务， 通知
+class Data2 {
+    //数字
+    private int number = 0;
+
+    Lock lock = new ReentrantLock();
+    Condition condition = lock.newCondition();
+
+//    condition.await(); // 等待
+//    condition.signalAll(); // 唤醒全部
+
+    //+1
+    public void increment() throws InterruptedException {
+        lock.lock();
+        try {
+            // 业务代码
+            while (number!=0){
+                // 等待
+                condition.await();
+            }
+            number++;
+            System.out.println(Thread.currentThread().getName()+"=>"+number);
+            // 通知其他线程，+1完毕了
+            condition.signalAll(); // 唤醒全部
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+    //-1
+    public void decrement() throws InterruptedException {
+        lock.lock();
+        try {
+            // 业务代码
+            while (number==0){
+                // 等待
+                condition.await();
+            }
+            number--;
+            System.out.println(Thread.currentThread().getName()+"=>"+number);
+            // 通知其他线程，-1完毕了
+            condition.signalAll(); // 唤醒全部
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+**任何一个新的技术，绝对不是仅仅只是覆盖了原来的技术，绝对有优势和补充！**
+>Condition
+
+优势是什么？
+![img_1.png](img_1.png)
+
+代码测试:
+```
+package com.wangjie;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * A 执行完调用B， B执行完调用C，C执行完调用D，D执行完调用A
+ */
+
+public class ProductComtumeC {
+    public static void main(String[] args) {
+        Data3 data3 = new Data3();
+
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data3.printA();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "A").start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data3.printB();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "B").start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data3.printC();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "C").start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    data3.printD();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "D").start();
+    }
+}
+
+class Data3 { // 资源类
+    private Lock lock = new ReentrantLock();
+    private Condition condition1 = lock.newCondition();
+    private Condition condition2 = lock.newCondition();
+    private Condition condition3 = lock.newCondition();
+    private Condition condition4 = lock.newCondition();
+    private int number = 1; // 1A 2B 3C 4D
+    public void printA() throws InterruptedException {
+        lock.lock();
+        try {
+            // 业务代码, 判断-》执行-》通知
+            while (number != 1) {
+                // 等待
+                condition1.await();
+            }
+            System.out.println(Thread.currentThread().getName()+"=>AAAAAAA");
+            // 唤醒指定的人，唤醒B, condition2
+            number = 2; // 精准唤醒
+            condition2.signal();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+    public void printB() throws InterruptedException {
+        lock.lock();
+        try {
+            // 业务代码
+            while (number != 2) {
+                // 等待
+                condition2.await();
+            }
+            System.out.println(Thread.currentThread().getName()+"=>BBBBBBB");
+            // 唤醒指定的人，唤醒C ，condition3
+            number = 3; // 精准唤醒
+            condition3.signal();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+    public void printC() throws InterruptedException {
+        lock.lock();
+        try {
+            // 业务代码
+            while (number != 3) {
+                // 等待
+                condition3.await();
+            }
+            System.out.println(Thread.currentThread().getName()+"=>CCCCCCC");
+            // 唤醒指定的人，唤醒D，condition4
+            number = 4; // 精准唤醒
+            condition4.signal();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void printD() throws InterruptedException {
+        lock.lock();
+        try {
+            // 业务代码
+            while (number != 4) {
+                // 等待
+                condition4.await();
+            }
+            System.out.println(Thread.currentThread().getName()+"=>DDDDDDD");
+            // 唤醒指定的人，唤醒A，condition1
+            number = 1; // 精准唤醒
+            condition1.signal();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+    // 生产线：下单 -》 支付- 》交易-》
+}
+```
+---
+**tips：**
+1. 为什么在业务代码下我们等待不适用if，而是适用while？
+- 问题存在A,B,C,D4个线程 ！ 虚假唤醒
+
+---
+### 8锁现象
+---
+如何判断锁的是谁？永远的知道什么锁？锁到底的锁的是谁？
+对象丶Class
+**深刻理解我们的锁**
