@@ -421,3 +421,95 @@ class Data3 { // 资源类
 ## 6. 集合类不安全
 > List不安全
 
+问题和解决方案：
+```
+package com.unsafe;
+
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+// java.util.ConcurrentModificationException 并发修改异常！
+public class ListTest {
+    public static void main(String[] args) {
+//        List<String> list = Arrays.asList("1", "2", "3", "4");
+//        list.forEach(System.out::println);
+        // 并发下 ArrayList 不安全的
+        /**
+         * 解决方案；
+         * 1. 可以用Vector<>()解决
+         * 2. 使用Collections.synchronizedList()包裹new ArrayList<>()这个
+         * 3. CopyOnWriteArrayList这种方式去使用这个东西.
+         */
+//        List<String> list = new ArrayList<>();
+//        List<String> list = new Vector<>();
+//         List<String> list = Collections.synchronizedList(new ArrayList<>());
+         // CopyOnWrite写入时复制 COW 计算机程序设计领域的一种优化策略;
+         // 多线程调用的时候,list,读取的时候，固定的，写入（覆盖）
+         // 在写入的时候避免覆盖,造成数据问题?
+         // 读写分离
+         // CopyOnWriteArrayList
+         // CopyOnWriteArrayList 比 Vector的区别是什么？ 使用的是Lock，不是
+         List<String> list = new CopyOnWriteArrayList<>();
+
+         for (int i = 0; i < 10; i++) {
+            new Thread(() -> {
+                list.add(UUID.randomUUID().toString().substring(0,5));
+                System.out.println(list);
+            }, String.valueOf(i)).start();
+        }
+    }
+}
+```
+
+> 狂神的学习方法推荐：1.先会用 2.货币三家，寻找其他的解决方案，3. 分析源码
+
+> set不安全
+
+解决的代码：
+```
+package com.unsafe;
+
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+/**
+ * 同理可证：java.util.ConcurrentModificationException
+ * 1. Collections.synchronizedSet()写法
+ * 2. 还是CopyOnWriteArraySet<>()内容;
+ */
+
+public class SetTest {
+    public static void main(String[] args) {
+//        Set<String> set = new HashSet<>();
+//        Set<String> set = Collections.synchronizedSet(new HashSet<>()); // 方法一
+        Set<String> set = new CopyOnWriteArraySet<>();
+
+        for (int i = 0; i < 30; i++) {
+            new Thread(() -> {
+                set.add(UUID.randomUUID().toString().substring(0, 5));
+                System.out.println(set);
+            }, String.valueOf(i)).start();
+        }
+    }
+}
+```
+> HashMap的底层是什么？
+
+```
+public Hashset(){
+    map = new HashMap<>();
+    
+    
+}
+// add set 本质是 map key是无法重复的!
+public boolean add(E e){
+    return map.put(e, PRESENT)==null;
+}
+
+private static final Object PRESENT = new Object(); // 不变的值
+```
+
+> Map不安全
+
+
+
