@@ -3,17 +3,19 @@ package com.lock8;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 8锁，就是关于锁的八个问题
- * 1. 标准情况下， 两个线程先打印，发短信还是打电话？ 1、发短信 2. 打电话
- * 2. 延迟4s，还是先发短信，再打电话；
+ * 3. 增加了一个普通方法hello,这个方法没有加上synchronized;
+ * 答：没有锁的方法，不收锁的影响，所以普通方法自己去执行;
+ * 4. 两个对象，两个同步方法；
  */
 
-public class Test1 {
+public class Test2 {
     public static void main(String[] args) {
-        Phone phone = new Phone();
+        // 两个对象
+        Phone2 phone1 = new Phone2();
+        Phone2 phone2 = new Phone2();
 
         new Thread(()->{
-            phone.sendSms();
+            phone1.sendSms();
         }, "A").start();
 
         // 捕获
@@ -24,12 +26,12 @@ public class Test1 {
         }
 
         new Thread(()->{
-            phone.call();
+            phone2.call();
         }, "B").start();
     }
 }
 
-class Phone{
+class Phone2 {
     // synchronized 锁的对象是方法的调用者
     // 两个方法用的是同一个锁，谁先拿到就谁先执行;
     public synchronized void sendSms(){
@@ -43,4 +45,9 @@ class Phone{
     public synchronized void call(){
         System.out.println("打电话");
     }
+
+    public void hello() {
+        System.out.println("hello");
+    }
 }
+
