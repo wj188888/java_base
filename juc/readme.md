@@ -569,3 +569,103 @@ class MyThread implements Callable<Integer> {
 细节:
 1. 有缓存
 2. 结果可能需要等待;
+
+### 常用JUC辅助类
+>CountDownLatch, 减法计算器
+```
+package com.add;
+import java.util.concurrent.CountDownLatch;
+// 减法计算器
+public class CountDownLatchDemo {
+    public static void main(String[] args) throws InterruptedException {
+        // 总数6,必须要执行任务才使用
+        CountDownLatch countDownLatch = new CountDownLatch(6);
+        for (int i = 0; i < 6; i++) {
+            new Thread(() -> {
+                System.out.println(Thread.currentThread().getName()+" Go out");
+                countDownLatch.countDown();
+            }, String.valueOf(i)).start();
+        }
+        countDownLatch.await(); // 等待计算器归零然后向下执行;
+//        countDownLatch.countDown(); //-1
+        System.out.println("Close Door");
+    }
+}
+
+```
+> CyclicBarrier, 加法计算器
+```
+package com.add;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
+public class CyclicBarrierDemo {
+    public static void main(String[] args) {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(7, () -> {
+            System.out.println("召唤神龙成功");
+        });
+        for (int i = 1; i <= 7; i++) {
+            final int temp = i;
+            new Thread(() -> {
+                System.out.println(Thread.currentThread().getName()+"收集"+temp+"个龙珠");
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+}
+
+```
+> Semapphore, 通行证
+
+```
+package com.add;
+
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
+public class SemaphoreDemo {
+    public static void main(String[] args) {
+        Semaphore semaphore = new Semaphore(3);
+
+        // 抢车位
+        for (int i = 1; i <= 6; i++) {
+            new Thread(() -> {
+                try {
+                    // 获取当前资源
+                    semaphore.acquire();
+                    System.out.println(Thread.currentThread().getName()+"抢到车位");
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.println(Thread.currentThread().getName()+"离开车位");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    // 释放当前资源
+                    semaphore.release();
+                }
+            }, String.valueOf(i)).start();
+        }
+    }
+}
+
+
+```
+
+### 读写锁
+> ReadWriteLock
+
+分为两把(一把写所,一把读所), 写所也叫独占锁.读所也叫共享锁
+读-读  可以共存
+读-写  不可共存
+写-写  不可共存
+
+
+
+
+
