@@ -1,4 +1,4 @@
-### 什么是JUC
+### 1.什么是JUC
 就是java下的三个包
 - java.util.concurrent
 - java.util.concurrent.automic
@@ -69,7 +69,7 @@ wait
 sleep
 >必须要捕获异常
 
-### Lock（重点）
+### 2.Lock（重点）
 
 >传统Synchronized
 
@@ -140,14 +140,14 @@ class Ticket2 {
 
 >锁是什么？如何判断锁的是谁？
 
-### 4.生产者和消费者问题
+### 3.生产者和消费者问题
 面试题：
 1.
 Synchronized wait notify（老版）
 Juc lock await signal
 >大有门道
 
-### JUC版生产者和消费者
+### 4.JUC版生产者和消费者
 通过Lock找到Condition
 Lock替换sychronized方法和语句的使用，Condition取代l对象监视器方法的使用。
 
@@ -407,7 +407,7 @@ class Data3 { // 资源类
 - 问题存在A,B,C,D4个线程 ！ 虚假唤醒
 
 ---
-### 8锁现象
+### 5.八锁现象
 ---
 如何判断锁的是谁？永远的知道什么锁？锁到底的锁的是谁？
 对象丶Class
@@ -418,7 +418,8 @@ class Data3 { // 资源类
 `new this`具体的一个手机
 `static Class` 唯一的一个模板
 
-## 6. 集合类不安全
+### 6. 集合类不安全
+
 > List不安全
 
 问题和解决方案：
@@ -510,9 +511,9 @@ private static final Object PRESENT = new Object(); // 不变的值
 ```
 
 > Map不安全
-.....
+> .....
 
->callable
+### 7. callable
 
 类似与Runnable;
 1. 可以有返回值,
@@ -570,7 +571,7 @@ class MyThread implements Callable<Integer> {
 1. 有缓存
 2. 结果可能需要等待;
 
-### 常用JUC辅助类
+### 8.常用JUC辅助类
 >CountDownLatch, 减法计算器
 ```
 package com.add;
@@ -657,7 +658,7 @@ public class SemaphoreDemo {
 
 ```
 
-### 读写锁
+### 9.读写锁
 > ReadWriteLock
 
 分为两把(一把写所,一把读所), 写所也叫独占锁.读所也叫共享锁
@@ -666,7 +667,7 @@ public class SemaphoreDemo {
 写-写  不可共存
 
 
-### 阻塞队列
+### 10.阻塞队列
 BlockingQueue不是新的东西,是阻塞队列
 什么情况下使用:多线程,线程池
 ![img_2.png](img_2.png)
@@ -675,16 +676,294 @@ BlockingQueue不是新的东西,是阻塞队列
 ![img_3.png](img_3.png)
 >接着有4组API
 ```
-1.抛出异常
-2.不会抛出异常
+1.执行完，抛出异常
+2.有返回值，不会抛出异常
 3.阻塞等待
 4,超时等待
 ```
 
-| 方式     |  抛出异常   |  不会抛出异常   |  阻塞等待   |超时等待     |
-|--------|-----|-----|-----|-----|
-| 添加     |  add   | offer()    |  put()   |  offer()   |
-| 移除     |  remove   | poll()    |     |  poll()   |
-| 判断队列首尾 | element | peek |     |     |
+| 方式     | 抛出异常    | 不会抛出异常  | 阻塞等待   | 超时等待       |
+| ------ | ------- | ------- | ------ | ---------- |
+| 添加     | add     | offer() | put()  | offer()带参数 |
+| 移除     | remove  | poll()  | take() | poll()带参数  |
+| 判断队列首尾 | element | peek()  | -      | -          |
 
 
+> 同步队列
+
+没有容量。
+进去一个元素，必须等待取出后再继续往里面放东西；
+put,take
+
+```
+package com.queen;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 同步队列
+ * 和其他的BlockQueue不一样，SynchronousQueue， 不存储元素
+ * put一个元素，必须先里面先take取出来，否则不能在put值进去
+ */
+
+public class SynchronousQueueDemo {
+    public static void main(String[] args) {
+        BlockingQueue<String> blockingQueue = new SynchronousQueue();
+
+        new Thread(() -> {
+            try {
+                System.out.println(Thread.currentThread().getName()+" put 1");
+                blockingQueue.put("1");
+                System.out.println(Thread.currentThread().getName()+" put 2");
+                blockingQueue.put("2");
+                System.out.println(Thread.currentThread().getName()+" put 3");
+                blockingQueue.put("3");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, "T1").start();
+
+        new Thread(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println(Thread.currentThread().getName()+"取出"+blockingQueue.take());
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println(Thread.currentThread().getName()+"取出"+blockingQueue.take());
+                TimeUnit.SECONDS.sleep(2);
+                System.out.println(Thread.currentThread().getName()+"取出"+blockingQueue.take());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }, "T2").start();
+    }
+}
+
+```
+
+### 11.线程池(重点)
+线程池：三大方法丶7大参数丶4种拒绝策略
+>池化技术
+
+程序运行的本质，占用资源，优化资源优化！
+
+线程池，连接池，内存池，对象池。。。// 创建丶销毁；十分浪费资源
+
+池化技术：事先准备好一些资源，有人要用，就来我这里拿，用完之后还给我；
+
+**线程池好处：**
+1. 降低资源的消耗
+2. 提高响应的速度
+3. 方便管理
+
+线程复用，可以控制最大并发数，管理线程
+
+> 线程
+
+线程池：三大方法丶7大参数丶4种拒绝策略
+
+**三大方法**
+```
+package com.pool;
+
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+// Executors工具类
+// 使用了线程池后，使用线程去创建
+public class Demo01 {
+    public static void main(String[] args) {
+//        ExecutorService threadPool = Executors.newSingleThreadExecutor();// 单个线程
+//        ExecutorService threadPool = Executors.newFixedThreadPool(5); // 创建一个固定的线程池的大小
+        ExecutorService threadPool = Executors.newCachedThreadPool(); // 创建一个可伸缩的线程池大小
+
+        try {
+            for (int i = 0; i < 100; i++) {
+                // 使用了线程池后，使用线程去创建
+                threadPool.execute(() -> {
+                    System.out.println(Thread.currentThread().getName()+" ok");
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 线程池用完，程序结束，关闭线程池
+            threadPool.shutdown();
+        }
+    }
+}
+
+```
+
+**7个参数**
+源码分析
+```
+public static ExecutorService newSingleThreadExecutor() {
+        return new FinalizableDelegatedExecutorService
+            (new ThreadPoolExecutor(1, 1,
+                                    0L, TimeUnit.MILLISECONDS,
+                                    new LinkedBlockingQueue<Runnable>()));
+    }
+    
+public static ExecutorService newFixedThreadPool(int nThreads) {
+        return new ThreadPoolExecutor(nThreads, nThreads,
+                                      0L, TimeUnit.MILLISECONDS,
+                                      new LinkedBlockingQueue<Runnable>());
+    }
+
+public static ExecutorService newCachedThreadPool() {
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                      60L, TimeUnit.SECONDS,
+                                      new SynchronousQueue<Runnable>());
+    }
+本质：ThreadPoolExecutor()
+```
+
+**7个参数**
+```
+public ThreadPoolExecutor(int corePoolSize, // 核心线程池大小
+                              int maximumPoolSize, // 最大线程池大小
+                              long keepAliveTime, //超时没有人调用就释放
+                              TimeUnit unit, //超时单位
+                              BlockingQueue<Runnable> workQueue, //阻塞队列
+                              ThreadFactory threadFactory, //线程工厂
+                              RejectedExecutionHandler handler) { // 拒绝策略
+        if (corePoolSize < 0 ||
+            maximumPoolSize <= 0 ||
+            maximumPoolSize < corePoolSize ||
+            keepAliveTime < 0)
+            throw new IllegalArgumentException();
+        if (workQueue == null || threadFactory == null || handler == null)
+            throw new NullPointerException();
+        this.acc = System.getSecurityManager() == null ?
+                null :
+                AccessController.getContext();
+        this.corePoolSize = corePoolSize;
+        this.maximumPoolSize = maximumPoolSize;
+        this.workQueue = workQueue;
+        this.keepAliveTime = unit.toNanos(keepAliveTime);
+        this.threadFactory = threadFactory;
+        this.handler = handler;
+    }
+```
+
+> 手动创建线程池
+
+四种拒绝策略：
+![img_4.png](img_4.png)
+
+> 小结和拓展
+
+池的最大大小如何去设置！
+了解IO密集型丶CPU密集型；（调优）
+
+### 12.四大函数式接口（必需掌握）
+作用是：简化编程模型，在新版本的框架底层大量应用！
+新时代的程序员：lambda表达式丶链式编程丶函数式接口丶Stream流式计算;
+泛型丶枚举丶反射和注解，
+
+> 函数式接口： 只有一个方法的接口
+
+```
+@FunctionalInterface
+public interface Runnable {
+
+    public abstract void run();
+}
+// 超级多FunctionalInterface
+// 简化编程模型，在新版本中的框架大量运用
+// foreach(消费者类型的函数式接口)
+```
+
+![img_5.png](img_5.png)
+代码测试：
+![img_6.png](img_6.png)
+> Function
+
+```
+package com.function;
+
+import java.util.function.Function;
+
+/**
+ * 函数型接口, 有一个输入参数，有一个输出
+ *  只要是 函数型接口 可以用 lambda表达式简化
+ */
+
+public class Demo01 {
+    public static void main(String[] args) {
+        // 工具类：输出输入的值
+//        Function function = new Function<String, String>() {
+//            @Override
+//            public String apply(String o) {
+//                return o + "123";
+//            }
+//        };
+        Function function = (str)->{return (str+"wangjie");};
+        System.out.println(function.apply("asd"));
+
+    }
+}
+
+```
+
+> Consumer 消费型接口
+
+![img_7.png](img_7.png)
+代码测试：
+```
+package com.function;
+
+import java.util.function.Consumer;
+
+public class Demo03 {
+    public static void main(String[] args) {
+//        Consumer<String> consumer = new Consumer<String>() {
+//            @Override
+//            public void accept(String str) {
+//                System.out.println(str);
+//            }
+//        };
+        Consumer<String> consumer = (str) -> {System.out.println(str);};
+        consumer.accept("adssds");
+    }
+}
+```
+> Supplier 供给型接口
+
+代码测试：
+![img_9.png](img_9.png)
+```
+package com.function;
+
+import java.util.function.Supplier;
+
+/**
+ * Supplier 供给型接口 没有参数，只有返回值
+ */
+
+public class Demo04 {
+    public static void main(String[] args) {
+//        Supplier<Integer> supplier = new Supplier<Integer>() {
+//            @Override
+//            public Integer get() {
+//                System.out.println("get");
+//                return 1024;
+//            }
+//        };
+        Supplier supplier = () -> {return 1024;};
+        System.out.println(supplier.get());
+    }
+}
+
+```
+
+### stream流式计算
+>什么是流式计算
+
+大数据：存储+计算
+存储：集合丶mysql
