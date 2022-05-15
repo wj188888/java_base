@@ -967,3 +967,75 @@ public class Demo04 {
 
 大数据：存储+计算
 存储：集合丶mysql
+
+### 14.ForkJoin
+> **分支合并：**
+
+Fork/Join框架是Java 7提供的一个用于并行执行任务的框架， 核心思想就是把大任务分割成若干个小任务，最终汇总每个小任务结果后得到大任务结果，
+其实现思想与MapReduce有异曲同工之妙。
+
+> ForkJoin特点：工作窃取
+
+这个里面维护的是双端队列；
+![img_10.png](img_10.png)
+
+代码测试：
+```
+package com.forkjoin;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.stream.LongStream;
+
+public class Test {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+//        test1(); // 4333ms
+//        test2(); // 2922ms
+        test3(); // 135ms
+
+
+    }
+
+    // 普通程序员
+    public static void test1() {
+        Long sum = 0L;
+        long start = System.currentTimeMillis();
+        for (Long i = 1L; i <= 10_0000_0000; i++) {
+            sum += i;
+        }
+
+        long end = System.currentTimeMillis();
+        System.out.println("sum="+ sum + "  时间: " + (end-start));
+    }
+
+    // 会使用forkjoin
+    public static void test2() throws ExecutionException, InterruptedException {
+        long start = System.currentTimeMillis();
+
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        ForkJoinTask<Long> task1 = new ForkJoinDemo(0L, 10_0000_0000L);
+        ForkJoinTask<Long> submit = forkJoinPool.submit(task1);// execute是同步执行，submit是异步提交；
+
+        Long sum = submit.get();
+
+        long end = System.currentTimeMillis();
+        System.out.println("sum=" + sum + "  时间: " + (end-start));
+    }
+
+    // stream并行流
+    public static void test3() {
+        long start = System.currentTimeMillis();
+        long sum = LongStream.rangeClosed(0L, 10_0000_0000L).parallel().reduce(0, Long::sum);
+        long end = System.currentTimeMillis();
+
+        System.out.println("sum="+ sum + "  时间: " + (end-start));
+    }
+}
+
+```
+
+### 异步回调
+> Future 设计初衷，对将来的某个事件的结果进行建模
+
+![img_11.png](img_11.png)
