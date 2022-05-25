@@ -1039,3 +1039,200 @@ public class Test {
 > Future 设计初衷，对将来的某个事件的结果进行建模
 
 ![img_11.png](img_11.png)
+
+```
+package com.lock8.future;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 异步调用: Ajax
+ * // 成功回调
+ * 失败回调
+ */
+
+public class Demo01 {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        // 发起一个请求,没有返回值的异步回调
+//        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+//            try {
+//                TimeUnit.SECONDS.sleep(2);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println(Thread.currentThread().getName()+"runAsync=>void");
+//        });
+//        System.out.println("111");
+//        completableFuture.get(); // 获取执行结果
+
+        // 有返回值的异步回调
+        // ajax, 成功和失败的问题
+        // 返回的是错误信息
+        CompletableFuture<Integer> completableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName()+ "supplyAsync=>VIntegeroid");
+            int _ = 10/0;
+            return 1024;
+        });
+        System.out.println(completableFuture.whenComplete((t,u) -> {
+            System.out.println("t=>"+t); // 正常的返回结果
+            System.out.println("u=>"+u);
+        }).exceptionally((e) -> {
+            System.out.println(e.getMessage());
+            return 2012;
+        }).get());
+    }
+}
+
+```
+
+### JMM
+> 请你谈谈你对Volatile的理解
+
+Volatile是java虚拟机提供的**轻量级的**同步机制；
+1. 保证可见性
+2. ==不保证原子性==
+3. 禁止指令重排
+
+> 什么是JMM
+
+JMM是java内存模型，不存在的东西，概念和约定！
+**关于JMM的一些同步的约定**
+1. 线程解锁前，必须把共享变量**立刻**刷回主存；
+2. 线程加锁前，必须读取主存中的最新值到工作内存中！
+3. 加锁和解锁是同一把锁；
+
+线程 **工作内存丶主内存**
+8中操作：
+加锁丶读取对象（变量）丶加载对象（变量）丶调用线程A的执行引擎丶返回执行结果丶写入中间空间丶读取到主存丶解锁
+![img_12.png](img_12.png)
+如果线程B修改了值，但是线程A不能及时知道；
+
+
+问题：程序不知道主内存的值已经被修改过了；
+
+### Volatile
+> 1.保证可见性
+
+```
+package com.tvoiatile;
+
+import java.util.concurrent.TimeUnit;
+
+public class JMMDemo {
+    // 不加 volatile 程序就会死循环！
+    // 加 volatile 可以保证可见性
+    private volatile static int num = 0;
+    public static void main(String[] args) throws InterruptedException { // main
+
+        new Thread(() -> { // 线程1 对主内存的变化是不知道的
+            while (num == 0) {
+
+            }
+        }).start();
+
+        TimeUnit.SECONDS.sleep(1);
+        num = 1;
+        System.out.println(num);
+    }
+}
+```
+> 2.不保证原子性
+
+原子性： 不可分割
+线程A在执行任务的时候，不能被打扰的，也不能被分割。要么同时成功，要么同时失败；
+
+代码测试：
+```
+package com.tvoiatile;
+
+/**
+ * 不保证原子性
+ */
+public class VDemo02 {
+    private static int num = 0;
+
+    public static void add() {
+        num++;
+    }
+    
+    public static void main(String[] args) {
+        for (int i = 1; i <= 20; i++) {
+            new Thread(() -> {
+                for (int j = 0; j < 1000; j++) {
+                    add();
+                }
+            }).start();
+        }
+        while (Thread.activeCount() > 2) {
+            Thread.yield();
+        }
+        System.out.println(Thread.currentThread().getName()+"  "+num);
+    }
+}
+
+```
+**如果不加lock和synchronized,怎么样保证原子性**
+![img_13.png](img_13.png)
+> 原子类为什么这么高级
+
+```
+package com.tvoiatile;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * 不保证原子性
+ */
+public class VDemo02 {
+    private volatile static AtomicInteger num = new AtomicInteger();
+
+    public static void add() {
+//        num++; // 不是一个原子性操作；
+        num.getAndIncrement(); // AtomicInteger + 1 方法 ,    CAS
+    }
+
+    public static void main(String[] args) {
+        for (int i = 1; i <= 20; i++) {
+            new Thread(() -> {
+                for (int j = 0; j < 1000; j++) {
+                    add();
+                }
+            }).start();
+        }
+        while (Thread.activeCount() > 2) {
+            Thread.yield();
+        }
+        System.out.println(Thread.currentThread().getName()+"  "+num);
+    }
+}
+// 这些类的底层都直接和操作系统挂钩；---   在内存中修改值; Unsafe是一个很特殊的存在；
+```
+**禁止指令重排**
+什么是指令重排:你写的程序，计算机并不是按照你写的那样去执行的；
+
+源代码--->编译器优化的重排->>>>指令并行也可能会重排--->内存系统也会重排--->执行
+```
+int x = 1;
+int y = 2;
+x = x + 5;
+y = x * x;
+期望的是： 1234执行；但是可能执行的顺序为 2134, 1324;
+但是不可能是 4123！
+```
+
+| 线程A | 线程B |
+|-----|-----|
+| x=a | y=b |
+| b=1 | a=2 |
+
+> 指令重排
+
+**volatile可以避免指令重排**
+内存屏障，CPU指令，作用：
+1. 保证特定的操作的执行顺序。
+2. 可以保证某些变量的内存可见性(利用这些特性volatile实现可见性)
+
+### 
