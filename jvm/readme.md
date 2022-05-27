@@ -101,5 +101,123 @@ method area 方法区
 
 static final, Class 常量池；
 
+## 栈
+程序：数据结构 +算法
+程序：不是 业务+ 逻辑
 
+栈： 先进后出，后进先出
+队列：先进先出（FIFO：First Input First Output）
+
+喝多了吐就是栈，吃多了就是队列
+
+为什么main()先执行，因为main()是最先进栈的；
+栈：栈内存，主管程序的运行，生命周期和线程同步；
+线程结束，栈内存就释放；对于栈来说，不存在垃圾回收问题！
+一旦线程结束，栈就Over！
+
+栈： 8大基本类型 + 对象引用 + 实例的方法
+**栈运行原理；栈帧存在，栈顶和栈底**
+栈帧的组成有：
+- 方法索引
+- 输入输出参数()
+- 本地变量
+- Class File:引用
+- 父帧
+- 子帧
+
+>>> 程序正在执行的方法，一定在栈的顶部；
+栈满了：StackOverflowError
+
+> 栈 + 堆 + 方法区：交互关系
+
+画出一个对象实例化过程的在内存中的流程；
+
+
+### 三种JVM
+- Sun公司 `Hotspot`
+- BEA `JRockit`
+- IBM `J9VM`
+
+学习的是`Hotspot`
+堆：
+heap, 一个JVM只有一个堆内存，堆内存的大小是可以调节的；
+类加载器读取了类文件后，一般会把什么东西放到堆中?类，方法，方法，常量~,保存我们所有引用类型的真实对象；
+堆内存中还要细分为三个区域：
+- 新生区 Young/New (Eden Space)还包括幸存区0区，幸存区1区；
+- 养老区 Old ()
+- 永久区 
+
+垃圾回收分为轻量级垃圾回收和重量级垃圾回收;
+重量级和轻量级;
+
+GC垃圾回收，主要是在伊甸园去和养老区；
+假设内存满了，OOM（堆内存不够） 会报错;java.lang.OutOfMemoryError
+在JDK8以后，永久存储区改了个名字()
+
+**新生区**
+- 类：诞生和成长的地方，甚至死亡；
+- 伊甸园，所有的对象都是在伊甸园区生产的；
+- 幸存者去（0,1）
+
+**老年区**
+大部分的对象都是临时对象！ 
+
+**永久区**
+这个区域常驻内存的。用来存放JDK自身携带的Class对象。Interface元数据，
+存储的是java运行时的一些环境或类信息~，这个区域不存在垃圾回收~关闭Vm虚拟机就会释放这个区域的内存~
+一个启动类，加载了大量的第三方jar包。tomcat部署了太多的应用，大量动态生成的反射类。不断的被加载。
+直到内存满，就会出现OOM；
+- jdk1.6之前 ： 永久代，常量池是在方法区；
+- jdk1.7 ：永久代，但是慢慢的退化了，`去永久代`，常量池在堆中
+- jdk1.8之后：无永久代，常量池在元空间
+
+元空间：逻辑上存在，物理上不存在
+在一个项目中，突然出现了OOM故障，那么如何排除~研究为甚么出错~
+- 能够看到代码第几行出错，内存快照分析工具，MAT，Jprofiler
+- Debug，一行行分析代码！
+
+MAT，Jprofiler作用：
+- 分析Dump内存文件，快速定位内存泄漏；
+- 获得堆中的数据
+- 获得大的对象
+......
+
+堆内存调优
+GC
+GC常用算法
+JMM
+
+```java
+package com.wangjie;
+
+import java.util.ArrayList;
+
+//Dump文件
+//-Xms 设备初始化内存分配大小 1/64
+//-Xmx 设置最大分配内存 1/4
+// -Xms8m -Xmx8m -XX:+PrintGCDetails 打印GC垃圾回收
+// 这样dump： `-Xms1m -Xmx8m -XX:+HeapDumpOnOutOfMemoryError`
+public class Demo03 {
+    byte[] array = new byte[1*1024*1024];//1m
+
+    public static void main(String[] args) {
+        ArrayList<Object> list = new ArrayList<>();
+        int count = 0;
+
+        try {
+            while(true){
+                list.add(new Demo03());
+                count = count + 1;
+            }
+        }catch (Exception e) {
+            // Throwable;Error,Exception
+            System.out.println("count" + count);
+            e.printStackTrace();
+        }
+
+
+    }
+}
+
+```
 
