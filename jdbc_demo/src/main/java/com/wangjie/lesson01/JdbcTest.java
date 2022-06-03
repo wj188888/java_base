@@ -6,6 +6,7 @@ import java.sql.*;
 
 public class JdbcTest {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
+
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         String url = "jdbc:mysql://localhost:3306/jdbcstudy?useUnicode=true&characterEncoding=utf8&&useSSL=true";
