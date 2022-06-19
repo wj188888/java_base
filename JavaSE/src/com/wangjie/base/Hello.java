@@ -12,6 +12,8 @@ public class Hello {
         System.out.println(EREa);
         String a = "sdja;fkal;d";
         System.out.println(a);
+        System.out.println(" "); //空字符
+        System.out.println('\n'+"数"+'\t'+"偶"+'\n');
         int num = 10;
         System.out.println(num);
         long num2 =100L;

@@ -21,11 +21,10 @@ public class Demo01 extends Object{
         List list = new ArrayList();
     }
     // 镇压所有的警告
-    @SuppressWarnings("all")
     public static void main(String[] args) {
-//        Demo01 demo01 = new Demo01();
-//        demo01.test();
-        test(); // 不推荐使用，但是也能够使用
+        Demo01 demo01 = new Demo01();
+        demo01.toString();
+        //test(); // 不推荐使用，但是也能够使用
     }
 
 
