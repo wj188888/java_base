@@ -17,7 +17,7 @@ public class Demo02 {
             return 0;
         }
         else {
-            return result;
+            return numtwo;
         }
 
 

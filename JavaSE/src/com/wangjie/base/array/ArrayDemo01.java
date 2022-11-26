@@ -5,6 +5,7 @@ public class ArrayDemo01 {
     public static void main(String[] args) {
         // 声明数组
         int[] nums;
+        // 初始化这个数组
         nums = new int[10];
         for (int i = 0; i < nums.length; i++) {
             nums[i] = i;

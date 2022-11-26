@@ -19,9 +19,9 @@ public class Hello {
         long num2 =100L;
         System.out.println(num2);
         // 小数
-        float str2= 12.223F;
+        float str2= 12.223f;
         System.out.println(str2);
-        double num6 = 12.321412123112;
+        double num6 = 12.321412123112D;
         System.out.println(num6);
         // 布尔类型
         boolean F = false;
