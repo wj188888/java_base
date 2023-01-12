@@ -24,5 +24,15 @@ public class EmployeeTest {
              ) {
             System.out.println("name="+ e.getName() + ",salary="+ e.getSalary() + ",hireDay=" + e.getHireDay());
         }
+
+        staff[0].setId();
+        System.out.println(staff[0].getId());
+        System.out.println(Employee.getNextId()); // 这里也可以staff[0].getNextId()，但是容易引起混淆，
+
+        System.out.println("======");
+        staff[0].setId();
+        System.out.println(staff[0].getId());
+        System.out.println(Employee.getNextId());
+
     }
 }
