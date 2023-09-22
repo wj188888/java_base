@@ -1,0 +1,2 @@
+在具备类的.java文件路径下，执行如下命令：
+javadoc -encoding utf-8 -charset utf-8 -author Doc.java

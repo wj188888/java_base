@@ -1,0 +1,35 @@
+> Jar包：
+	将应用程序打包，你一定希望只向用户提供一个单独的文件，而不是一个包含大量类文件的目录结构。Java归档文件就是为此目的而设计的。
+
+创建Jar包文件：
+	常用的命令为：（进入路径jdk/bin目录下）
+	`jar cvf jarFileName file1 file2 ...`
+
+通常使用的jar命令格式如下：
+	jar options file1 file2
+
+> 清单文件：
+	除了类文件、图像和其他资源文件外。还有一个清单文件mainfest；被命名为MANIFEST.MF，位于JAR文件的一个特殊的META-INF子目录中。
+
+要想编辑清单文件，需要将希望添加到清单文件中的行放到文本文件中，然后运行：
+`jar cfm jarFileName mainfestFileName`
+创建新的清单文件需要为：
+	`jar cfm MyArchive.jar manifest.mf com/mycompany/mypkg/*.class`
+
+编辑有清单文件的jar包：
+
+	`jar ufm MyArchive.jar manifest-additions.mf`
+
+> 执行Jar文件：
+
+	可以使用jar命令中的e选项指定程序的入口点，及通常需要在调用java程序启动器时指定的类：
+	`jar cvfe MyProgram.jar com.mycompany.mypkg.MainAppClass file to add`
+
+tips：
+	清单文件必须以换行符结束；
+
+启动程序：
+	java -jar MyProgram.jar
+
+多版本jar 概念；换句话说是给多个jdk版本去运行这个java程序，进行多个jar版本的清单进行上下文兼容。
+
