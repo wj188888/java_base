@@ -6,6 +6,7 @@ public class MyException extends Exception{
     // c传递数字-》10；
     private int detail;
 
+    // 实例化函数
     public MyException(int a) {
         this.detail = a;
     }

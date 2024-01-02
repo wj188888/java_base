@@ -8,5 +8,6 @@ package com.wangjie.javaCoreTech.day01;
 public class MathTest {
     public static void main(String[] args) {
         System.out.println(Math.PI);
+        Math.PI = 1.23;
     }
 }
